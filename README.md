@@ -1,8 +1,8 @@
 # INC - Troubleshooting FortiGate BGP + HA
 
-Lab de troubleshooting de um incidente simulado em FortiGate com HA (High Availability), BGP (Border Gateway Protocol), IPsec e ECMP (Equal-Cost Multi-Path).
+Lab de troubleshooting de um **incidente simulado** em FortiGate com HA (High Availability), BGP (Border Gateway Protocol), IPsec e ECMP (Equal-Cost Multi-Path).
 
-O objetivo aqui não é explicar toda a teoria do BGP. A proposta é reproduzir o INC, validar o comportamento durante o failover, identificar onde a comunicação quebra e aplicar ajustes até reduzir a indisponibilidade.
+A proposta deste repositório é operacional: reproduzir o INC, coletar evidências, localizar a quebra e validar a correção. Pouca teoria e foco no que seria feito durante um incidente.
 
 ## Sintoma
 
@@ -18,10 +18,13 @@ Após a perda do Primary do Rio:
 
 - o Secondary assume corretamente;
 - os túneis IPsec permanecem ativos;
-- as sessões BGP precisam reconvergir;
-- durante os primeiros testes, as rotas desapareciam e a comunicação apresentava uma segunda janela de perda significativa após o chaveamento.
+- o BGP precisa reconvergir;
+- as rotas chegavam a desaparecer durante a transição;
+- a comunicação apresentava uma segunda janela de perda após o chaveamento.
 
-## Validação rápida durante o INC
+Em um dos primeiros testes foram observadas **72 perdas consecutivas de ICMP** antes da recuperação.
+
+## Validação durante o INC
 
 ```bash
 get system ha status
@@ -30,7 +33,7 @@ get router info bgp neighbors <IP_DO_NEIGHBOR> routes
 get router info routing-table bgp
 ```
 
-### Neighbors usados no lab
+### Neighbors do lab
 
 **Rio - AS 65000**
 
@@ -46,33 +49,25 @@ get router info routing-table bgp
 2.2.2.1
 ```
 
-## Evidência inicial
+Para acompanhar a sessão TCP do BGP durante o failover:
 
-No baseline, os dois caminhos estavam operacionais e o ICMP apresentava request/reply normalmente.
+```bash
+diagnose sniffer packet any 'port 179' 4 0 l
+```
 
-![Baseline antes do failover](evidencias/01-baseline-antes-failover.png)
+## O que foi encontrado
 
-## Reprodução do incidente
+### 1. HA chaveava, mas o BGP ainda estava reconvergindo
 
-Após o failover do HA, o novo Primary assumiu, porém os neighbors BGP ficaram inicialmente em `Active` e a tabela BGP chegou a ficar sem rotas.
+Após o failover, o novo Primary assumia corretamente, porém os neighbors chegaram a permanecer em `Active` e a tabela BGP ficou temporariamente sem rotas.
 
-![BGP Active após failover](evidencias/02-bgp-active-sem-rotas.png)
-
-Em um dos primeiros testes foram observadas dezenas de perdas consecutivas antes da recuperação do tráfego.
-
-## Investigação
-
-### 1. Route TTL
-
-O valor padrão observado no lab era:
+O `route-ttl` padrão observado era:
 
 ```text
 route-ttl = 10
 ```
 
-O `route-ttl` mantém temporariamente no novo Primary as rotas sincronizadas pelo HA enquanto os protocolos dinâmicos reconvergem.
-
-Aumentar apenas esse valor melhorava temporariamente o forwarding, mas não resolvia a causa da reconvergência lenta.
+Aumentar somente o `route-ttl` mantinha as rotas sincronizadas por mais tempo, mas não corrigia sozinho a reconvergência do BGP.
 
 ### 2. Timers BGP
 
@@ -83,7 +78,7 @@ keepalive = 60s
 holdtime  = 180s
 ```
 
-Foram ajustados no lab para:
+No lab foram ajustados para:
 
 ```bash
 config router bgp
@@ -92,25 +87,39 @@ config router bgp
 end
 ```
 
-O objetivo foi reduzir o tempo necessário para recuperação das sessões após o failover.
+A mudança reduziu o tempo de recuperação das sessões após o failover.
 
-### 3. Advertisement interval
+### 3. A sessão voltava antes das rotas
 
-Mesmo após o BGP voltar para `Established`, foi observado um período em que `State/PfxRcd` ainda permanecia em `0`, sem os prefixos necessários na tabela.
+Mesmo com o BGP em `Established`, foi observado `State/PfxRcd = 0` por alguns segundos.
 
-Na Matriz foi confirmado:
+Na Matriz, durante a segunda janela de perda, o comando abaixo não retornava as redes `10.10.x.x` do Rio:
+
+```bash
+get router info routing-table bgp | grep 10.10
+```
+
+Quando as rotas abaixo reapareciam, o ping voltava imediatamente:
+
+```text
+10.10.10.0/24
+10.10.20.0/24
+10.10.30.0/24
+```
+
+Isso confirmou que a segunda indisponibilidade estava relacionada à **ausência temporária da rota de retorno na Matriz**.
+
+## Advertisement interval
+
+Foi confirmado nos peers:
 
 ```text
 Minimum time between advertisement runs is 30 seconds
 ```
 
-Durante a segunda janela de perda, a Matriz ainda não possuía as rotas de retorno `10.10.x.x`. Assim que essas rotas apareceram novamente na tabela BGP, o ping voltou.
+O `advertisement-interval` foi reduzido para 1 segundo nos dois lados.
 
-![Ausência temporária das rotas de retorno](evidencias/03-rotas-retorno-ausentes.png)
-
-O `advertisement-interval` foi reduzido para 1 segundo nos neighbors dos dois lados.
-
-**Matriz:**
+### Matriz
 
 ```bash
 config router bgp
@@ -125,7 +134,7 @@ config router bgp
 end
 ```
 
-**Rio:**
+### Rio
 
 ```bash
 config router bgp
@@ -140,7 +149,19 @@ config router bgp
 end
 ```
 
-## Configuração final utilizada no teste
+Validação:
+
+```bash
+get router info bgp neighbors <IP_DO_NEIGHBOR> | grep -i "Minimum time"
+```
+
+Esperado:
+
+```text
+Minimum time between advertisement runs is 1 seconds
+```
+
+## Configuração final do teste
 
 ```text
 route-ttl              = 60s
@@ -149,7 +170,7 @@ holdtime-timer         = 30s
 advertisement-interval = 1s
 ```
 
-Para o HA:
+HA:
 
 ```bash
 config system ha
@@ -157,30 +178,32 @@ config system ha
 end
 ```
 
+Também foi testado `route-ttl 80`, porém o resultado permaneceu em aproximadamente 3 perdas. Como não houve ganho prático, foi mantido o valor de 60 segundos.
+
 ## Resultado
 
-Após os ajustes, o failover passou a apresentar apenas uma pequena perda transitória de aproximadamente 3 pacotes ICMP, sem a indisponibilidade prolongada observada no início do INC.
-
-![Resultado após ajustes](evidencias/04-resultado-final.png)
-
-Também foi testado `route-ttl 80`, porém o resultado permaneceu em aproximadamente 3 perdas. Por esse motivo, foi mantido `route-ttl 60`, pois não houve ganho prático com o valor maior.
-
-## Resumo do INC
+Após os ajustes, os testes repetidos de failover passaram a apresentar aproximadamente **3 perdas de ICMP**, sem a longa indisponibilidade observada no início.
 
 ```text
 ANTES
 HA failover
-→ BGP demora a convergir
-→ rotas desaparecem / retorno fica ausente
+→ reconvergência lenta
+→ rotas temporariamente ausentes
 → longa janela de perda
 
 DEPOIS
 HA failover
 → timers BGP ajustados
-→ anúncios de rota mais rápidos nos dois lados
-→ route-ttl cobre a janela de reconvergência
+→ anúncios de rota acelerados nos dois sentidos
+→ route-ttl cobrindo a janela de reconvergência
 → aproximadamente 3 perdas transitórias
-→ comunicação estabiliza
+→ comunicação estabilizada
 ```
 
-> Os valores utilizados neste lab foram definidos a partir do comportamento observado neste cenário simulado. Em produção, timers BGP e parâmetros de HA devem ser validados de acordo com a topologia, peers, SLAs e comportamento do ambiente.
+## Conclusão
+
+O problema não estava no chaveamento do HA em si. O impacto prolongado era causado pelo tempo necessário para reconstruir as sessões BGP e, principalmente, para que as rotas fossem novamente anunciadas e instaladas nos dois sentidos.
+
+Os ajustes reduziram a indisponibilidade de dezenas de segundos para uma perda transitória de poucos pacotes.
+
+> Os valores deste lab foram definidos a partir do comportamento observado neste cenário simulado. Em produção, timers BGP e parâmetros de HA devem ser validados de acordo com a topologia, peers, SLAs e comportamento do ambiente.

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="985" viewBox="0 0 1280 985">
+<title>Transcrição do log ICMP: 72 perdas consecutivas, sequência 17 até 88</title>
+<desc>Representação visual da transcrição real fornecida durante o laboratório, não captura de tela original. São 72 linhas de timeout entre ICMP sequence 17 e 88, inclusive.</desc>
+<style>
+.bg{fill:#0d1117}.panel{fill:#101820;stroke:#364251;stroke-width:1.5}
+.heading{font:700 27px Arial,sans-serif;fill:#e6edf3}
+.subheading{font:17px Arial,sans-serif;fill:#f4d35e}
+.note{font:14px Arial,sans-serif;fill:#bac7d5}
+.log{font:17px "DejaVu Sans Mono",Consolas,monospace;fill:#ffb1a5}
+</style>
+<rect width="1280" height="985" class="bg"/>
+<text class="heading" x="34" y="46">INC simulado - falha de comunicação após failover HA</text>
+<text class="subheading" x="34" y="81">72 timeouts ICMP consecutivos: icmp_seq=17 até icmp_seq=88</text>
+<text class="note" x="34" y="109">Transcrição visual do log fornecido no diagnóstico (não é captura de tela original).</text>
+<rect x="20" y="128" width="608" height="790" rx="8" class="panel"/>
+<rect x="650" y="128" width="608" height="790" rx="8" class="panel"/>
+<text x="34" y="161" class="log">10.0.10.1 icmp_seq=17 timeout</text>
+<text x="34" y="182" class="log">10.0.10.1 icmp_seq=18 timeout</text>
+<text x="34" y="203" class="log">10.0.10.1 icmp_seq=19 timeout</text>
+<text x="34" y="224" class="log">10.0.10.1 icmp_seq=20 timeout</text>
+<text x="34" y="245" class="log">10.0.10.1 icmp_seq=21 timeout</text>
+<text x="34" y="266" class="log">10.0.10.1 icmp_seq=22 timeout</text>
+<text x="34" y="287" class="log">10.0.10.1 icmp_seq=23 timeout</text>
+<text x="34" y="308" class="log">10.0.10.1 icmp_seq=24 timeout</text>
+<text x="34" y="329" class="log">10.0.10.1 icmp_seq=25 timeout</text>
+<text x="34" y="350" class="log">10.0.10.1 icmp_seq=26 timeout</text>
+<text x="34" y="371" class="log">10.0.10.1 icmp_seq=27 timeout</text>
+<text x="34" y="392" class="log">10.0.10.1 icmp_seq=28 timeout</text>
+<text x="34" y="413" class="log">10.0.10.1 icmp_seq=29 timeout</text>
+<text x="34" y="434" class="log">10.0.10.1 icmp_seq=30 timeout</text>
+<text x="34" y="455" class="log">10.0.10.1 icmp_seq=31 timeout</text>
+<text x="34" y="476" class="log">10.0.10.1 icmp_seq=32 timeout</text>
+<text x="34" y="497" class="log">10.0.10.1 icmp_seq=33 timeout</text>
+<text x="34" y="518" class="log">10.0.10.1 icmp_seq=34 timeout</text>
+<text x="34" y="539" class="log">10.0.10.1 icmp_seq=35 timeout</text>
+<text x="34" y="560" class="log">10.0.10.1 icmp_seq=36 timeout</text>
+<text x="34" y="581" class="log">10.0.10.1 icmp_seq=37 timeout</text>
+<text x="34" y="602" class="log">10.0.10.1 icmp_seq=38 timeout</text>
+<text x="34" y="623" class="log">10.0.10.1 icmp_seq=39 timeout</text>
+<text x="34" y="644" class="log">10.0.10.1 icmp_seq=40 timeout</text>
+<text x="34" y="665" class="log">10.0.10.1 icmp_seq=41 timeout</text>
+<text x="34" y="686" class="log">10.0.10.1 icmp_seq=42 timeout</text>
+<text x="34" y="707" class="log">10.0.10.1 icmp_seq=43 timeout</text>
+<text x="34" y="728" class="log">10.0.10.1 icmp_seq=44 timeout</text>
+<text x="34" y="749" class="log">10.0.10.1 icmp_seq=45 timeout</text>
+<text x="34" y="770" class="log">10.0.10.1 icmp_seq=46 timeout</text>
+<text x="34" y="791" class="log">10.0.10.1 icmp_seq=47 timeout</text>
+<text x="34" y="812" class="log">10.0.10.1 icmp_seq=48 timeout</text>
+<text x="34" y="833" class="log">10.0.10.1 icmp_seq=49 timeout</text>
+<text x="34" y="854" class="log">10.0.10.1 icmp_seq=50 timeout</text>
+<text x="34" y="875" class="log">10.0.10.1 icmp_seq=51 timeout</text>
+<text x="34" y="896" class="log">10.0.10.1 icmp_seq=52 timeout</text>
+<text x="666" y="161" class="log">10.0.10.1 icmp_seq=53 timeout</text>
+<text x="666" y="182" class="log">10.0.10.1 icmp_seq=54 timeout</text>
+<text x="666" y="203" class="log">10.0.10.1 icmp_seq=55 timeout</text>
+<text x="666" y="224" class="log">10.0.10.1 icmp_seq=56 timeout</text>
+<text x="666" y="245" class="log">10.0.10.1 icmp_seq=57 timeout</text>
+<text x="666" y="266" class="log">10.0.10.1 icmp_seq=58 timeout</text>
+<text x="666" y="287" class="log">10.0.10.1 icmp_seq=59 timeout</text>
+<text x="666" y="308" class="log">10.0.10.1 icmp_seq=60 timeout</text>
+<text x="666" y="329" class="log">10.0.10.1 icmp_seq=61 timeout</text>
+<text x="666" y="350" class="log">10.0.10.1 icmp_seq=62 timeout</text>
+<text x="666" y="371" class="log">10.0.10.1 icmp_seq=63 timeout</text>
+<text x="666" y="392" class="log">10.0.10.1 icmp_seq=64 timeout</text>
+<text x="666" y="413" class="log">10.0.10.1 icmp_seq=65 timeout</text>
+<text x="666" y="434" class="log">10.0.10.1 icmp_seq=66 timeout</text>
+<text x="666" y="455" class="log">10.0.10.1 icmp_seq=67 timeout</text>
+<text x="666" y="476" class="log">10.0.10.1 icmp_seq=68 timeout</text>
+<text x="666" y="497" class="log">10.0.10.1 icmp_seq=69 timeout</text>
+<text x="666" y="518" class="log">10.0.10.1 icmp_seq=70 timeout</text>
+<text x="666" y="539" class="log">10.0.10.1 icmp_seq=71 timeout</text>
+<text x="666" y="560" class="log">10.0.10.1 icmp_seq=72 timeout</text>
+<text x="666" y="581" class="log">10.0.10.1 icmp_seq=73 timeout</text>
+<text x="666" y="602" class="log">10.0.10.1 icmp_seq=74 timeout</text>
+<text x="666" y="623" class="log">10.0.10.1 icmp_seq=75 timeout</text>
+<text x="666" y="644" class="log">10.0.10.1 icmp_seq=76 timeout</text>
+<text x="666" y="665" class="log">10.0.10.1 icmp_seq=77 timeout</text>
+<text x="666" y="686" class="log">10.0.10.1 icmp_seq=78 timeout</text>
+<text x="666" y="707" class="log">10.0.10.1 icmp_seq=79 timeout</text>
+<text x="666" y="728" class="log">10.0.10.1 icmp_seq=80 timeout</text>
+<text x="666" y="749" class="log">10.0.10.1 icmp_seq=81 timeout</text>
+<text x="666" y="770" class="log">10.0.10.1 icmp_seq=82 timeout</text>
+<text x="666" y="791" class="log">10.0.10.1 icmp_seq=83 timeout</text>
+<text x="666" y="812" class="log">10.0.10.1 icmp_seq=84 timeout</text>
+<text x="666" y="833" class="log">10.0.10.1 icmp_seq=85 timeout</text>
+<text x="666" y="854" class="log">10.0.10.1 icmp_seq=86 timeout</text>
+<text x="666" y="875" class="log">10.0.10.1 icmp_seq=87 timeout</text>
+<text x="666" y="896" class="log">10.0.10.1 icmp_seq=88 timeout</text>
+<text class="note" x="34" y="951">Antes: icmp_seq=16 respondeu • Depois: icmp_seq=89 respondeu • 72 pacotes consecutivos perdidos</text>
+</svg>

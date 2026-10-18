@@ -24,6 +24,8 @@ Após a perda do Primary do Rio:
 
 Em um dos primeiros testes foram observadas **72 perdas consecutivas de ICMP** antes da recuperação.
 
+![BGP em Active e ausência de rotas após o failover](evidencias/05-bgp-active-sem-rotas-pos-failover.png)
+
 ## Validação durante o INC
 
 ```bash
@@ -109,6 +111,8 @@ Quando as rotas abaixo reapareciam, o ping voltava imediatamente:
 
 Isso confirmou que a segunda indisponibilidade estava relacionada à **ausência temporária da rota de retorno na Matriz**.
 
+![Ausência temporária das rotas de retorno na Matriz](evidencias/10-rota-retorno-ausente-matriz.png)
+
 ## Advertisement interval
 
 Foi confirmado nos peers:
@@ -184,6 +188,8 @@ Também foi testado `route-ttl 80`, porém o resultado permaneceu em aproximadam
 
 Após os ajustes, os testes repetidos de failover passaram a apresentar aproximadamente **3 perdas de ICMP**, sem a longa indisponibilidade observada no início.
 
+![Resultado após os ajustes, com poucos pacotes perdidos](evidencias/12-resultado-final-3-perdas.png)
+
 ```text
 ANTES
 HA failover
@@ -207,3 +213,8 @@ O problema não estava no chaveamento do HA em si. O impacto prolongado era caus
 Os ajustes reduziram a indisponibilidade de dezenas de segundos para uma perda transitória de poucos pacotes.
 
 > Os valores deste lab foram definidos a partir do comportamento observado neste cenário simulado. Em produção, timers BGP e parâmetros de HA devem ser validados de acordo com a topologia, peers, SLAs e comportamento do ambiente.
+
+## Evidências e documentação
+
+- [Ver as 12 evidências do incidente, em ordem cronológica](EVIDENCIAS.md).
+- [Documentação técnica oficial da Fortinet consultada](REFERENCIAS.md).

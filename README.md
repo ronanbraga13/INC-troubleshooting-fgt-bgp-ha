@@ -22,9 +22,9 @@ Após a perda do Primary do Rio:
 - as rotas chegavam a desaparecer durante a transição;
 - a comunicação apresentava uma segunda janela de perda após o chaveamento.
 
-Em um dos primeiros testes foram observadas **72 perdas consecutivas de ICMP** antes da recuperação.
+Em um dos primeiros testes foram observadas **72 perdas consecutivas de ICMP** (`icmp_seq=17` a `icmp_seq=88`). A imagem abaixo é uma **transcrição visual dos logs fornecidos durante o teste**, e não um print original da CLI.
 
-![BGP em Active e ausência de rotas após o failover](evidencias/05-bgp-active-sem-rotas-pos-failover.png)
+![Transcrição das 72 perdas consecutivas de ICMP](evidencias/00-transcricao-72-perdas-icmp.svg)
 
 ## Validação durante o INC
 
@@ -62,6 +62,8 @@ diagnose sniffer packet any 'port 179' 4 0 l
 ### 1. HA chaveava, mas o BGP ainda estava reconvergindo
 
 Após o failover, o novo Primary assumia corretamente, porém os neighbors chegaram a permanecer em `Active` e a tabela BGP ficou temporariamente sem rotas.
+
+![BGP em Active e ausência de rotas após o failover](evidencias/05-bgp-active-sem-rotas-pos-failover.png)
 
 O `route-ttl` padrão observado era:
 
@@ -216,5 +218,5 @@ Os ajustes reduziram a indisponibilidade de dezenas de segundos para uma perda t
 
 ## Evidências e documentação
 
-- [Ver as 12 evidências do incidente, em ordem cronológica](EVIDENCIAS.md).
+- [Ver as evidências do incidente, em ordem cronológica](EVIDENCIAS.md).
 - [Documentação técnica oficial da Fortinet consultada](REFERENCIAS.md).

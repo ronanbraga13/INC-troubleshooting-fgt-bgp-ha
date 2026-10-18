@@ -1,5 +1,11 @@
 # Evidências do INC
 
+## Registro da perda inicial — 72 pacotes ICMP
+
+O log coletado durante os testes apresentou **72 perdas consecutivas** (`icmp_seq=17` a `icmp_seq=88`). A imagem a seguir foi montada a partir dessa transcrição e **não representa uma captura original da tela**.
+
+![Transcrição visual das 72 perdas de ICMP](evidencias/00-transcricao-72-perdas-icmp.svg)
+
 ## 1. Baseline antes do failover
 
 ![Baseline de comunicação](evidencias/01-baseline-comunicacao-antes-failover.png)
